@@ -1,50 +1,60 @@
-# React + TypeScript + Vite
+# Tetris
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ReactとTypeScriptで実装された現代的なテトリスゲームです。styled-componentsを使用したレスポンシブなデザインで、どのデバイスでも快適にプレイできます。
 
-Currently, two official plugins are available:
+## 技術スタック
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- TypeScript
+- Styled Components
+- Vite
 
-## Expanding the ESLint configuration
+## 機能
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- クラシックなテトリスゲームプレイ
+- 次のピースプレビュー
+- スコア、レベル、クリアした行数の追跡
+- レベルに応じた落下速度の増加
+- ハードドロップ機能（スペースキー）
+- レスポンシブデザイン
 
-- Configure the top-level `parserOptions` property like this:
+## インストールと実行
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+```bash
+# リポジトリをクローン
+git clone https://github.com/yourusername/tetris-game.git
+cd tetris-game
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+# 依存関係のインストール
+npm install
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+# 開発サーバーの起動
+npm run dev
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+# ビルド
+npm run build
+```README.md
+
+## 操作方法
+
+- **←・→**: テトリミノを左右に移動
+- **↓**: テトリミノを下に移動（ソフトドロップ）
+- **↑**: テトリミノを回転
+- **スペース**: ハードドロップ（一気に落下）
+
+## ゲームルール
+
+1. テトリミノを操作して、水平な列を完成させましょう
+2. 完成した列は消え、上の段が下に落ちてきます
+3. 列を消すとスコアが加算されます（1列: 40点 × レベル、2列: 100点 × レベル、3列: 300点 × レベル、4列: 1200点 × レベル）
+4. 10行消すごとにレベルが上がり、テトリミノの落下速度が上がります
+5. テトリミノが画面上部に積み上がるとゲームオーバーです
+
+## 開発情報
+
+このゲームは以下のフックを使用して状態管理を行っています：
+
+- `usePlayer`: プレイヤーの操作とテトリミノの状態を管理
+- `useStage`: ゲーム画面の状態を管理
+- `useGameStatus`: スコア、レベル、クリアした行数を管理
+- `useInterval`: ゲームループの制御に使用
