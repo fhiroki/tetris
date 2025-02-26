@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledDisplay } from '../components/styles/StyledDisplay';
+import { StyledDisplay } from './styles/StyledDisplay';
 
 type Props = {
   text: string;

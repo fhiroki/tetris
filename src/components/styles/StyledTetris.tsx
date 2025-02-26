@@ -31,19 +31,27 @@ export const StyledTetris = styled.div`
     margin: 0 20px 0 5px;
   }
 
-  .game-over {
+  .game-over, .game-paused {
     position: absolute;
     top: 40%;
     left: 51%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.8);
-    color: red;
-    font-size: 32px;
+    font-size: 22px;
     padding: 30px;
     border-radius: 10px;
     width: 80%;
     text-align: center;
     z-index: 10;
+    pointer-events: none;
+  }
+
+  .game-over {
+    color: red;
+  }
+
+  .game-paused {
+    color: yellow;
   }
 
   aside {

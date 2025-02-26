@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledCell } from '../components/styles/StyledCell';
+import { StyledCell } from './styles/StyledCell';
 import { TETROMINOS } from '../tetrominos';
 
 type Props = {

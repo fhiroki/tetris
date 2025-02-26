@@ -11,13 +11,16 @@ import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
 import NextTetromino from './NextTetromino';
+import PauseButton from './PauseButton';
 
 const Tetris: React.FC = () => {
   const [dropTime, setDropTime] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [previousDropTime, setPreviousDropTime] = useState<number | null>(null);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate, nextTetromino] = usePlayer();
-  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
+  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, isPaused);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
 
   const drop = useCallback(() => {
@@ -60,48 +63,71 @@ const Tetris: React.FC = () => {
     updatePlayerPos({ x: 0, y: newY - player.pos.y, collided: true });
   }, [player, stage, updatePlayerPos]);
 
+  const togglePause = useCallback(() => {
+    if (!gameOver) {
+      if (isPaused) {
+        // ゲームを再開
+        setIsPaused(false);
+        setDropTime(previousDropTime);
+      } else {
+        // ゲームを一時停止
+        setIsPaused(true);
+        setPreviousDropTime(dropTime);
+        setDropTime(null);
+      }
+    }
+  }, [gameOver, isPaused, dropTime, previousDropTime]);
+
   const keyUp = useCallback((e: KeyboardEvent) => {
     // デフォルトの動作を防止
     e.preventDefault();
 
-    if (!gameOver) {
+    if (!gameOver && !isPaused) {
       // Activate the interval again when user releases down arrow
-      if (e.keyCode === 40) {
+      if (e.key === 'ArrowDown') {
         setDropTime(1000 / (level + 1) + 200);
       }
     }
-  }, [gameOver, level, setDropTime]);
+  }, [gameOver, isPaused, level, setDropTime]);
 
   const move = useCallback((e: KeyboardEvent) => {
     // デフォルトの動作（スクロール）を防止
     e.preventDefault();
 
-    if (!gameOver) {
-      if (e.keyCode === 37) {
+    if (!gameOver && !isPaused) {
+      if (e.key === 'ArrowLeft') {
         // Left arrow
         movePlayer(-1);
-      } else if (e.keyCode === 39) {
+      } else if (e.key === 'ArrowRight') {
         // Right arrow
         movePlayer(1);
-      } else if (e.keyCode === 40) {
+      } else if (e.key === 'ArrowDown') {
         // Down arrow
         dropPlayer();
-      } else if (e.keyCode === 38) {
+      } else if (e.key === 'ArrowUp') {
         // Up arrow - rotate
         playerRotate(stage, 1);
-      } else if (e.keyCode === 32) {
+      } else if (e.key === ' ') {
         // Space - hard drop
         hardDrop();
+      } else if (e.key === 'p') {
+        // P key - pause/resume
+        togglePause();
       }
+    } else if (e.key === 'p' && !gameOver) {
+      // P key can always toggle pause if game is not over
+      togglePause();
     }
-  }, [gameOver, movePlayer, dropPlayer, playerRotate, hardDrop, stage]);
+  }, [gameOver, isPaused, movePlayer, dropPlayer, playerRotate, hardDrop, togglePause, stage]);
 
   const startGame = useCallback(() => {
     // Reset everything
     setStage(createStage());
     setDropTime(1000);
+    setPreviousDropTime(1000);
     resetPlayer();
     setGameOver(false);
+    setIsPaused(false);
     setScore(0);
     setRows(0);
     setLevel(0);
@@ -135,6 +161,10 @@ const Tetris: React.FC = () => {
               <p>スコア: {score}</p>
               <p>レベル: {level}</p>
             </div>
+          ) : isPaused ? (
+            <div className="game-paused">
+              <h2>一時停止中</h2>
+            </div>
           ) : null}
         </div>
         <aside>
@@ -143,6 +173,9 @@ const Tetris: React.FC = () => {
             <Display text={`列: ${rows}`} />
             <Display text={`レベル: ${level}`} />
             <NextTetromino tetromino={nextTetromino} />
+            {!gameOver && (
+              <PauseButton callback={togglePause} isPaused={isPaused} />
+            )}
             <StartButton callback={startGame} />
           </div>
         </aside>

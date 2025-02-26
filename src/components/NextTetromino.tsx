@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledNextTetromino } from '../components/styles/StyledNextTetromino';
+import { StyledNextTetromino } from './styles/StyledNextTetromino';
 import { TETROMINOS } from '../tetrominos';
 
 type Props = {

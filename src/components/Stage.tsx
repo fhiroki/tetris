@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledStage } from '../components/styles/StyledStage';
+import { StyledStage } from './styles/StyledStage';
 import Cell from './Cell';
 import { TETROMINOS } from '../tetrominos';
 

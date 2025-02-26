@@ -11,7 +11,7 @@ interface Player {
   collided: boolean;
 }
 
-export const useStage = (player: Player, resetPlayer: () => void) => {
+export const useStage = (player: Player, resetPlayer: () => void, isPaused: boolean) => {
   const [stage, setStage] = useState<Stage>(createStage());
   const [rowsCleared, setRowsCleared] = useState(0);
 
@@ -30,6 +30,8 @@ export const useStage = (player: Player, resetPlayer: () => void) => {
   }, []);
 
   useEffect(() => {
+    if (isPaused) return; // 一時停止中はステージを更新しない
+
     setRowsCleared(0);
 
     const updateStage = (prevStage: Stage) => {
@@ -58,7 +60,7 @@ export const useStage = (player: Player, resetPlayer: () => void) => {
     };
 
     setStage(prev => updateStage(prev) as Stage);
-  }, [player, resetPlayer, sweepRows]);
+  }, [player, resetPlayer, sweepRows, isPaused]);
 
   return [stage, setStage, rowsCleared] as const;
 };
